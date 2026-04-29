@@ -1,0 +1,7 @@
+{
+  "report_id": "1011",
+  "original_length": 97,
+  "clean_length": 85,
+  "clean_findings": "patient [PERSON] doe seen at [ORG] hospital on [DATE]. mri shows mild osteroarthritis",
+  "phi_entity_count": 3
+}

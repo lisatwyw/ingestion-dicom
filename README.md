@@ -34,9 +34,10 @@ pip install git+https://github.com/lisatwyw/ingestion-demo.git@main
 ```
 
 ```
-import sys; sys.path.append( 'src')
-import multimodal_dag as mm 
-pipeline = mm.MultimodalIngestionPipeline( 'data', 'test' )
+
+from src.ingestion_pipeline import MultimodalIngestionPipeline
+
+pipeline = MultimodalIngestionPipeline( 'data', 'test' )
 out = pipeline.process_dicom( 'IMG-0001-00001.dcm' )
 
 r = 'hello patient john doe seen at seatle on oct 12, 2023. mri shows mild osteroarthritis'

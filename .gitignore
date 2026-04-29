@@ -1,1 +1,13 @@
 .venv/
+
+
+# Airflow generated files
+airflow-webserver.pid
+airflow.cfg
+webserver_config.py
+
+# Logs and cache
+logs/
+__pycache__/
+*.pyc
+ 

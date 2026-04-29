@@ -1,21 +1,35 @@
-# Use a slim Python base image
-FROM python:3.9-slim
+FROM python:3.12-slim
 
-# Set working directory
-WORKDIR /app
+# Prevent Python from writing pyc files
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Install system dependencies (sometimes needed for specific DICOM compressions)
-RUN apt-get update && apt-get install -y gcc libgdcm-tools && rm -rf /var/lib/apt/lists/*
+# Airflow home
+ENV AIRFLOW_HOME=/opt/airflow
 
-# Copy requirements and install
+WORKDIR /opt/airflow
+
+# System deps (needed for some Python packages)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && apt-get clean
+
+# Copy requirements first (better caching)
 COPY requirements.txt .
+
+# Install Airflow with constraints (CRITICAL)
+RUN pip install --no-cache-dir "apache-airflow==2.9.1" \
+    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.9.1/constraints-3.11.txt"
+
+# Install remaining deps
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Download the spaCy model during the build step, NOT at runtime
-RUN python -m spacy download en_core_web_sm
+# Copy project
+COPY . .
 
-# Copy the pipeline code
-COPY ingestion_pipeline.py .
+# Initialize Airflow DB
+RUN airflow db init
 
-# Command to execute the pipeline (or start an Airflow worker)
-CMD ["python", "ingestion_pipeline.py"]
+# Default command
+CMD ["airflow", "standalone"]

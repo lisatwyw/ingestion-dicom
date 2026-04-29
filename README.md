@@ -56,3 +56,32 @@ ingest-dicom/
 ├── requirements.txt
 └── README.md
 ```
+
+<details>
+
+<summary></summary>
+
+# a) unsafe:
+```
+pseudo_id = str(hash(dataset.get("PatientID", filename))) 
+```
+
+# b) safer but vulnerable to dictionary attack (hackable if someone brute-force small ID or know name of patient):
+```      
+import hashlib
+pid = str(dataset.get("PatientID", filename)).encode()
+pseudo_id = hashlib.sha256(pid).hexdigest()
+```
+
+# c) even safer: pseudonymization
+```
+pseudo_id = hashlib.sha256(pid).hexdigest()
+```
+
+# d) best practice: use HMAC (keyed hashing)
+
+```
+import hmac
+pseudo_id = hmac.new(SECRET, pid, hashlib.sha256).hexdigest()
+```
+</details>

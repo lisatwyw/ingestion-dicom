@@ -1,1 +1,16 @@
+# Core DICOM processing
+pydicom==2.4.4
+numpy>=1.26 
+
+# Text processing / regex (standard lib handles most, but useful for scaling)
+spacy>=3.7.0
+
+# Airflow (pin to a stable version)
+apache-airflow==2.9.1
+
+# Testing
+pytest>=7.4
+
+# Optional but recommended (logging, config, utilities)
+python-dotenv>=1.0.1
 

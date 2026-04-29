@@ -4,6 +4,7 @@ numpy>=1.26
 
 # Text processing / regex (standard lib handles most, but useful for scaling)
 spacy>=3.7.0
+nlp
 
 # Airflow (pin to a stable version)
 apache-airflow==2.9.1

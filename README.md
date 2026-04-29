@@ -1,3 +1,10 @@
+# About
+
+```
+pip install git+https://github.com/your-org/healthcare-ingestion-pipeline.git@main
+```
+
+# Files
 ```
 ingest-dicom/
 ├── src/

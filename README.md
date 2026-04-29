@@ -1,10 +1,39 @@
 # About
 
+## Orchestration
+
+### DAG for Dicom
+- Pull DICOMs
+- Extract pixel arrays with pydicom
+
 ```
-pip install git+https://github.com/your-org/healthcare-ingestion-pipeline.git@main
+[Ingest DICOMs]
+    ↓
+[Extract Pixel Data]
+    ↓
+[Normalize Images]
 ```
 
-# Files
+### DAG for reports
+- De-identify reports
+- Validate outputs
+- Store in your training dataset
+
+```
+[Ingest Reports] → [De-identify Text]
+    ↓
+[Validate Data]
+    ↓
+[Store Dataset]
+```
+
+## Usage
+
+```
+pip install git+https://github.com/lisatwyw/ingestion-demo.git@main
+```
+
+## Files
 ```
 ingest-dicom/
 ├── src/

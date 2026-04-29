@@ -2,7 +2,11 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 
-from src.ingestion_pipeline import MultimodalIngestionPipeline
+from pathlib import Path
+from glob import glob
+
+import sys; sys.path.append('src')
+from ingestion_pipeline import MultimodalIngestionPipeline
 
 RAW_DIR = "/opt/airflow/data/raw"
 SAFE_DIR = "/opt/airflow/data/safe"
@@ -17,10 +21,18 @@ pipeline = MultimodalIngestionPipeline(
 # TASK FUNCTIONS
 # -----------------------
 
+def get_repo_root():
+    # Airflow runs from /opt/airflow
+    return Path.cwd()
+
 def process_dicom_task():
-    filename = "sample.dcm"  # later: from DB or file listing
-    output = pipeline.process_dicom(filename)
-    print(f"DICOM saved at: {output}")
+    data_dir = get_repo_root() / "data"
+
+    files = glob( data_dir / '*.dcm')
+    for f in files:
+        filename = data_dir / f  # later: from DB or file listing
+        output = pipeline.process_dicom(filename)
+        print(f"DICOM saved at: {output}")
     return output
 
 
@@ -38,7 +50,7 @@ def process_text_task():
 
 with DAG(
     dag_id="multimodal_ingestion",
-    start_date=datetime(2024, 1, 1),
+    start_date=datetime(2026, 5, 1),
     schedule="@daily",
     catchup=False
 ) as dag:

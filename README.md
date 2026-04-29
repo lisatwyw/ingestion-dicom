@@ -33,35 +33,36 @@
 pip install git+https://github.com/lisatwyw/ingestion-demo.git@main
 ```
 
+<details><summary>Test module with one sample</summary>
+
 ```
 
 from src.ingestion_pipeline import MultimodalIngestionPipeline
 
-pipeline = MultimodalIngestionPipeline( 'data', 'test' )
+pipeline = MultimodalIngestionPipeline( 'data', 'example_output' )
 out = pipeline.process_dicom( 'IMG-0001-00001.dcm' )
 
-r = 'hello patient john doe seen at seatle on oct 12, 2023. mri shows mild osteroarthritis'
+r = 'patient john doe seen at seatle hostptal on oct 12, 2023. mri shows mild osteroarthritis'
 out2= pipeline.process_text_report(report_text = r, report_id='1111')
 
 ```
+</details>
+
+<details><summary>Test Airflow DAG</summary>
+```
+docker compose up
+```
+</details>
+
 
 ## Files
 ```
 ingest-dicom/
 ├── src/
 │   ├── __init__.py
-│   ├── ingestion/
-│   │   ├── __init__.py
-│   │   ├── dicom_processor.py
-│   │   └── text_processor.py
-│   └── utils/
-│       ├── __init__.py
-│       └── file_handlers.py
-├── tests/
-│   ├── test_dicom_normalization.py
-│   └── test_phi_redaction.py
+│   └── ingestion_pipeline.py
 ├── dags/
-│   └── multimodal_dag.py
+│   └── ingestion_dag.py
 ├── Dockerfile
 ├── docker-compose.yml
 ├── pyproject.toml

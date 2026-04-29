@@ -1,35 +1,24 @@
-FROM python:3.12-slim
+FROM apache/airflow:2.9.1-python3.10
 
-# Prevent Python from writing pyc files
-ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-
-# Airflow home
 ENV AIRFLOW_HOME=/opt/airflow
 
 WORKDIR /opt/airflow
 
-# System deps (needed for some Python packages)
+USER root
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    && apt-get clean
+    build-essential gcc g++ curl && \
+    apt-get clean
 
-# Copy requirements first (better caching)
 COPY requirements.txt .
 
-# Install Airflow with constraints (CRITICAL)
-RUN pip install --no-cache-dir "apache-airflow==2.9.1" \
-    --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.9.1/constraints-3.11.txt"
+USER airflow
 
-# Install remaining deps
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project
-COPY . .
+COPY dags/ /opt/airflow/dags/
+COPY src/ /opt/airflow/src/
 
-# Initialize Airflow DB
-RUN airflow db init
+ENV PYTHONPATH=/opt/airflow/src
 
-# Default command
 CMD ["airflow", "standalone"]

@@ -44,18 +44,26 @@ out = pipeline.process_dicom( 'IMG-0001-00001.dcm' )
 
 r = 'patient john doe seen at seatle hostptal on oct 12, 2023. mri shows mild osteroarthritis'
 out2= pipeline.process_text_report(report_text = r, report_id='1111')
-
+ 
 ```
 </details>
 
 <details><summary>Test Airflow DAG</summary>
+
 ```
 docker compose up
 ```
+
+```
+docker compose down -v
+```
+
+
 </details>
 
 
 ## Files
+
 ```
 ingest-dicom/
 ├── src/
@@ -70,31 +78,33 @@ ingest-dicom/
 └── README.md
 ```
 
+
 <details>
+<summary>Notes</summary>
 
-<summary></summary>
 
-# a) unsafe:
+## 1. unsafe:
 ```
 pseudo_id = str(hash(dataset.get("PatientID", filename))) 
 ```
 
-# b) safer but vulnerable to dictionary attack (hackable if someone brute-force small ID or know name of patient):
+## 2. safer but vulnerable to dictionary attack (hackable if someone brute-force small ID or know name of patient):
 ```      
 import hashlib
 pid = str(dataset.get("PatientID", filename)).encode()
 pseudo_id = hashlib.sha256(pid).hexdigest()
 ```
 
-# c) even safer: pseudonymization
+## 3. even safer: pseudonymization
 ```
 pseudo_id = hashlib.sha256(pid).hexdigest()
 ```
 
-# d) best practice: use HMAC (keyed hashing)
+## 4. best practice: use HMAC (keyed hashing)
 
 ```
 import hmac
 pseudo_id = hmac.new(SECRET, pid, hashlib.sha256).hexdigest()
 ```
+
 </details>
